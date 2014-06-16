@@ -1,4 +1,7 @@
-﻿using Mundialito.DAL.Accounts;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Mundialito.DAL;
+using Mundialito.DAL.Accounts;
 using Mundialito.DAL.ActionLogs;
 using Mundialito.DAL.GeneralBets;
 using Mundialito.DAL.Teams;
@@ -43,9 +46,14 @@ namespace Mundialito.Controllers
             
         }
 
+        
         public IEnumerable<GeneralBetViewModel> GetAllGeneralBets()
         {
-            return generalBetsRepository.GetGeneralBets().Select( bet => new GeneralBetViewModel(bet));
+            if (!User.IsInRole("Admin") && dateTimeProvider.UTCNow < TournamentTimesUtils.GeneralBetsCloseTime)
+            {
+                throw new ArgumentException("General bets are still open for betting, you can't see other users bets yet");
+            }
+            return generalBetsRepository.GetGeneralBets().Select( bet => new GeneralBetViewModel(bet)).OrderBy( bet => bet.OwnerName);
         }
 
         [Route("has-bet/{username}")]
@@ -59,13 +67,16 @@ namespace Mundialito.Controllers
         [HttpGet]
         public Boolean CanSubmitBets()
         {
-            return DateTime.UtcNow < TournamentTimesUtils.GeneralBetsCloseTime;
+            return dateTimeProvider.UTCNow  < TournamentTimesUtils.GeneralBetsCloseTime;
         }
 
         [Route("user/{username}")]
         [HttpGet]
         public GeneralBetViewModel GetUserGeneralBet(string username)
         {
+            if (userProivider.UserName != username && dateTimeProvider.UTCNow < TournamentTimesUtils.GeneralBetsCloseTime)
+                throw new ArgumentException("General bets are still open for betting, you can't see other users bets yet");
+
             var item = generalBetsRepository.GetUserGeneralBet(username);
 
             if (item == null)

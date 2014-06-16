@@ -5,8 +5,6 @@ angular.module('mundialitoApp').controller('GameCtrl', ['$scope', '$log', 'Games
     $scope.userBet.GameId = game.GameId;
     $scope.showEditForm = false;
 
-
-
     if (!$scope.game.IsOpen)
     {
         BetsManager.getGameBets($scope.game.GameId).then(function (data) {
@@ -18,6 +16,7 @@ angular.module('mundialitoApp').controller('GameCtrl', ['$scope', '$log', 'Games
             chart1.options = {
                 displayExactValues: true,
                 is3D: true,
+                backgroundColor: { fill:'transparent' },
                 chartArea: {left:10,top:20,bottom:0,height:"100%"},
                 title: 'Bets Distribution'
             };
@@ -46,7 +45,7 @@ angular.module('mundialitoApp').controller('GameCtrl', ['$scope', '$log', 'Games
 
     $scope.updateBet = function() {
         if ($scope.userBet.BetId !== -1) {
-            $scope.userBet.update().then(function(data) {
+            $scope.userBet.update().success(function(data) {
                 Alert.new('success', 'Bet was updated successfully', 2000);
                 BetsManager.setBet(data);
             });
@@ -58,5 +57,19 @@ angular.module('mundialitoApp').controller('GameCtrl', ['$scope', '$log', 'Games
                 Alert.new('success', 'Bet was added successfully', 2000);
             });
         }
+    };
+
+    $scope.sort = function(column) {
+        $log.debug('GameCtrl: sorting by ' + column);
+        $scope.gameBets = _.sortBy($scope.gameBets, function (item) {
+            switch (column)
+            {
+                case 'points': return item.Points;
+                case 'cards': return item.CardsMark;
+                case 'corners': return item.CornersMark;
+                case 'user': return item.User.FirstName + item.User.LastName;
+                case 'result': return item.HomeScore + '-' + item.AwayScore;
+            }
+        });
     };
 }]);

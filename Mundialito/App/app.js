@@ -1,4 +1,4 @@
-﻿angular.module('mundialitoApp', ['security', 'ngSanitize', 'ngRoute', 'ngAnimate', 'ui.bootstrap', 'autoFields', 'cgBusy', 'ajoslin.promise-tracker', 'ui.select2', 'ui.bootstrap.datetimepicker', 'FacebookPluginDirectives','ngGrid','googlechart'])
+﻿angular.module('mundialitoApp', ['security', 'ngSanitize', 'ngRoute', 'ngAnimate', 'ui.bootstrap', 'autoFields', 'cgBusy', 'ajoslin.promise-tracker', 'ui.select2', 'ui.bootstrap.datetimepicker', 'FacebookPluginDirectives','ngGrid','googlechart','angular-data.DSCacheFactory'])
     .value('cgBusyTemplateName','App/Partials/angular-busy.html')
     .config(['$routeProvider', '$httpProvider', '$locationProvider', '$parseProvider', 'securityProvider','Constants', function ( $routeProvider, $httpProvider, $locationProvider, $parseProvider, securityProvider, Constants) {
         $locationProvider.html5Mode(true);
@@ -10,7 +10,21 @@
         $routeProvider.
             when('/', {
                 templateUrl: 'App/Dashboard/Dashboard.html',
-                controller: 'DashboardCtrl'
+                controller: 'DashboardCtrl',
+                resolve : {
+                    teams : ['TeamsManager', function ( TeamsManager) {
+                        return TeamsManager.loadAllTeams();
+                    }]
+                }
+            }).
+            when('/bets_center', {
+                templateUrl: 'App/Bets/BetsCenter.html',
+                controller: 'BetsCenterCtrl',
+                resolve : {
+                    games : ['GamesManager', function (GamesManager) {
+                        return GamesManager.loadOpenGames();
+                    }]
+                }
             }).
             when('/users/:username', {
                 templateUrl: 'App/Users/UserProfile.html',

@@ -94,7 +94,7 @@ angular.module('mundialitoApp').factory('TeamsManager', ['$http', '$q', 'Team','
             var deferred = $q.defer();
             var scope = this;
             $log.debug('TeamsManager: will fetch all teams from server');
-            $http.get("api/teams", { tracker: 'getTeams' })
+            $http.get("api/teams", { tracker: 'getTeams', cache: true })
                 .success(function(teamsArray) {
                     var teams = [];
                     teamsArray.forEach(function(teamData) {
@@ -118,7 +118,7 @@ angular.module('mundialitoApp').factory('TeamsManager', ['$http', '$q', 'Team','
             if (team) {
                 team.setData(teamData);
             } else {
-                team = scope._retrieveInstance(teamData);
+                team = scope._retrieveInstance(teamData.TeamId,teamData);
             }
             return team;
         }

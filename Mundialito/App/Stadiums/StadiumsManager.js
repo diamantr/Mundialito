@@ -91,7 +91,7 @@ angular.module('mundialitoApp').factory('StadiumsManager', ['$http', '$q', 'Stad
             var deferred = $q.defer();
             var scope = this;
             $log.debug('StadiumsManager: will fetch all games from server');
-            $http.get("api/stadiums", { tracker: 'getStadiums' })
+            $http.get("api/stadiums", { tracker: 'getStadiums', cache: true })
                 .success(function(stadiumsArray) {
                     var stadiums = [];
                     stadiumsArray.forEach(function(stadiumData) {
@@ -114,7 +114,7 @@ angular.module('mundialitoApp').factory('StadiumsManager', ['$http', '$q', 'Stad
             if (stadium) {
                 stadium.setData(stadiumData);
             } else {
-                stadium = scope._retrieveInstance(stadiumData);
+                stadium = scope._retrieveInstance(stadiumData.StadiumId,stadiumData);
             }
             return stadium;
         }
