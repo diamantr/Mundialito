@@ -14,8 +14,8 @@ namespace Mundialito.Models
         public GameViewModel(Game game)
         {
             GameId = game.GameId;
-            HomeTeam = game.HomeTeam;
-            AwayTeam = game.AwayTeam;
+            HomeTeam = new GameTeamModel(game.HomeTeam);
+            AwayTeam = new GameTeamModel(game.AwayTeam);
             Date = game.Date;
             HomeScore = game.HomeScore;
             AwayScore = game.AwayScore;
@@ -30,9 +30,9 @@ namespace Mundialito.Models
 
         public int GameId { get; private set; }
 
-        public Team HomeTeam { get; private set; }
+        public GameTeamModel HomeTeam { get; private set; }
 
-        public Team AwayTeam { get; private set; }
+        public GameTeamModel AwayTeam { get; private set; }
 
         public DateTime Date { get; private set; }
 
@@ -66,26 +66,33 @@ namespace Mundialito.Models
 
     }
 
-    /*
-    public class GameStadiumViewModel
+    public class GameTeamModel
     {
-        public GameStadiumViewModel(Stadium stadium)
+        public GameTeamModel()
         {
-            StadiumId = stadium.StadiumId;
-            Name = stadium.Name;
-            City = stadium.City;
-            Capacity = stadium.Capacity;
+
         }
 
-        public int StadiumId { get; set; }
+        public GameTeamModel(Team team)  
+        {
+            TeamId = team.TeamId;
+            Name = team.Name;
+            Flag = team.Flag;
+            Logo = team.Logo;
+            ShortName = team.ShortName;
+        }
+
+        public int TeamId { get; set; }
 
         public string Name { get; set; }
 
-        public string City { get; set; }
+        public string Flag { get; set; }
 
-        public int Capacity { get; set; }
+        public string Logo { get; set; }
+
+        public string ShortName { get; set; }
+
     }
-    */
 
     public class NewGameModel
     {
@@ -99,10 +106,10 @@ namespace Mundialito.Models
         public Stadium Stadium { get; set; }
 
         [Required]
-        public Team HomeTeam { get; set; }
+        public GameTeamModel HomeTeam { get; set; }
 
         [Required]
-        public Team AwayTeam { get; set; }
+        public GameTeamModel AwayTeam { get; set; }
 
         public Boolean IsOpen { get; set; }
 
@@ -123,9 +130,6 @@ namespace Mundialito.Models
             AwayScore = game.AwayScore;
             CornersMark = game.CornersMark;
             CardsMark = game.CardsMark;
-            Stadium = game.Stadium;
-            HomeTeam = game.HomeTeam;
-            AwayTeam = game.AwayTeam;
         }
 
         public DateTime Date { get; set; }
@@ -137,12 +141,6 @@ namespace Mundialito.Models
         public String CornersMark { get; set; }
 
         public String CardsMark { get; set; }
-
-        public Stadium Stadium { get; set; }
-
-        public Team HomeTeam { get; set; }
-
-        public Team AwayTeam { get; set; }
 
     }
 
